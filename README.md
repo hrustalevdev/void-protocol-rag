@@ -41,7 +41,7 @@ You can also check endpoints directly:
 
 ```bash
 curl http://localhost:3000/health   # {"status":"ok"}
-curl http://localhost:8000/api/v1/heartbeat  # {"nanosecond heartbeat":...}
+curl http://localhost:8000/api/v2/heartbeat  # {"nanosecond heartbeat":...}
 curl http://localhost:11434/api/tags         # {"models":[...]}
 ```
 
