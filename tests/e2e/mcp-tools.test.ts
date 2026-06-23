@@ -32,20 +32,24 @@ describe("MCP tool handlers (e2e)", () => {
 
   beforeAll(async () => {
     const { Ollama } = await import("ollama")
-    const client = new ChromaClient({ path: "http://localhost:8000" })
+    const client = new ChromaClient({ host: "localhost", port: 8000 })
 
     // Clean slate
     try { await client.deleteCollection({ name: TEST_COLLECTION }) } catch {}
-    collection = await client.getOrCreateCollection({ name: TEST_COLLECTION })
 
     const ollama = new Ollama()
     const embed = (text: string) => ollama.embeddings({ model: "nomic-embed-text", prompt: text }).then(r => r.embedding)
+    collection = await client.getOrCreateCollection({
+      name: TEST_COLLECTION,
+      embeddingFunction: { generate: (texts: string[]) => Promise.all(texts.map(embed)) },
+    })
+
     bm25 = new BM25Index()
     indexer = new Indexer(collection, bm25, embed)
   })
 
   afterAll(async () => {
-    const client = new ChromaClient({ path: "http://localhost:8000" })
+    const client = new ChromaClient({ host: "localhost", port: 8000 })
     try { await client.deleteCollection({ name: TEST_COLLECTION }) } catch {}
   })
 

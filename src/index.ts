@@ -15,12 +15,20 @@ import { registerFindRelevantDocsTool } from "./tools/find-relevant-docs.js"
 async function main() {
   const config = getConfig()
 
-  const chromaClient = new ChromaClient({ path: config.chromadbUrl })
-  const collection = await chromaClient.getOrCreateCollection({ name: config.chromaCollection })
-
   const ollama = new Ollama({ host: config.ollamaUrl })
   const embed = (text: string) =>
     ollama.embeddings({ model: config.embedModel, prompt: text }).then(r => r.embedding)
+
+  const chromaUrl = new URL(config.chromadbUrl)
+  const chromaClient = new ChromaClient({
+    host: chromaUrl.hostname,
+    port: parseInt(chromaUrl.port) || 8000,
+    ssl: chromaUrl.protocol === "https:",
+  })
+  const collection = await chromaClient.getOrCreateCollection({
+    name: config.chromaCollection,
+    embeddingFunction: { generate: (texts: string[]) => Promise.all(texts.map(embed)) },
+  })
 
   const bm25 = new BM25Index()
   const indexer = new Indexer(collection, bm25, embed)
