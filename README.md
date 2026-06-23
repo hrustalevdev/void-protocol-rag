@@ -23,11 +23,13 @@ cp .env.example .env   # defaults work out of the box
 **2. Start all services**
 
 ```bash
-docker compose up
+docker compose up -d
 ```
 
 **First start takes 5–15 minutes** — Ollama downloads `phi3:mini` (~2.4 GB) and `nomic-embed-text` (~270 MB).
 Subsequent starts are instant (models are cached in a Docker volume).
+
+To follow logs while waiting: `docker compose logs -f`
 
 **3. Verify services are healthy**
 
