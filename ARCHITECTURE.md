@@ -16,10 +16,10 @@ graph TD
     FRD["find_relevant_docs"]
     IS["index_status"]
     Indexer["Indexer"]
-    RAG["LangGraph RAG Graph\nrewrite → retrieve → grade → generate"]
-    ChromaDB["ChromaDB\n(vector store)"]
-    BM25["BM25\n(in-memory)"]
-    Ollama["Ollama\n(LLM + embeddings)"]
+    RAG["LangGraph RAG Graph<br/>rewrite → retrieve → grade → generate"]
+    ChromaDB["ChromaDB<br/>(vector store)"]
+    BM25["BM25<br/>(in-memory)"]
+    Ollama["Ollama<br/>(LLM + embeddings)"]
 
     Client -->|"SSE port 3000"| Server
     Server --> IF
@@ -43,13 +43,13 @@ graph TD
 
 ```mermaid
 flowchart TD
-    Start([RU Query]) --> RW[rewriteQuery\nRU → EN]
-    RW --> RT[retrieve\nBM25 + vector → RRF]
-    RT --> GR[gradeChunks\nLLM: relevant? yes/no]
-    GR --> COND{≥2 relevant\nOR retries ≥ 2?}
-    COND -->|Yes| GEN[generate\nanswer in RU]
+    Start([RU Query]) --> RW[rewriteQuery<br/>RU → EN]
+    RW --> RT[retrieve<br/>BM25 + vector → RRF]
+    RT --> GR[gradeChunks<br/>LLM: relevant? yes/no]
+    GR --> COND{≥2 relevant<br/>OR retries ≥ 2?}
+    COND -->|Yes| GEN[generate<br/>answer in RU]
     GEN --> End([Return answer + sources])
-    COND -->|No| BQ[broadenQuery\nexpand with synonyms]
+    COND -->|No| BQ[broadenQuery<br/>expand with synonyms]
     BQ --> RT
 ```
 
