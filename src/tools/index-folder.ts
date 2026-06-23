@@ -30,7 +30,7 @@ export function registerIndexFolderTool(server: McpServer, indexer: Indexer): vo
         return {
           content: [{
             type: "text" as const,
-            text: JSON.stringify({ success: false, error: (err as Error).message }),
+            text: JSON.stringify({ error: (err as Error).message }),
           }],
           isError: true,
         }
