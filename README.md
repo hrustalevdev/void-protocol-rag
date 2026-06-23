@@ -70,9 +70,23 @@ Add the contents of `mcp-config.json` to your VSCode `settings.json` under the k
 
 ## Verification
 
-Run these steps in order inside your MCP client (Claude Desktop or Copilot Chat):
+You can verify using your MCP client (Claude Desktop or Copilot Chat) or with **MCP Inspector**:
 
-**Step 1 — Index the sample documents**
+```bash
+npx @modelcontextprotocol/inspector http://localhost:3000/sse
+```
+
+Run the steps below in order:
+
+**Step 1 — Check status before indexing**
+
+```
+index_status()
+```
+
+Expected: `status: "empty", chunkCount: 0`
+
+**Step 2 — Index the sample documents**
 
 ```
 index_folder("./sample_docs")
@@ -80,15 +94,15 @@ index_folder("./sample_docs")
 
 Expected response: `filesIndexed: 14, chunksCreated: <number>`
 
-**Step 2 — Check index status**
+**Step 3 — Check status after indexing**
 
 ```
 index_status()
 ```
 
-Expected: `status: "ready"`
+Expected: `status: "ready", chunkCount: <number>, lastIndexed: <timestamp>`
 
-**Step 3 — Ask a question in Russian**
+**Step 4 — Ask a question in Russian**
 
 ```
 ask_question("сколько постоянных жителей на станции Новая Амора?")
@@ -96,7 +110,7 @@ ask_question("сколько постоянных жителей на станц
 
 Expected: an answer mentioning **47 000** — a fact that exists only in `sample_docs` and cannot be guessed from general knowledge.
 
-**Step 4 — Find raw chunks**
+**Step 5 — Find raw chunks**
 
 ```
 find_relevant_docs("combat mechanics")
