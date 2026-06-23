@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__project-navigator__read_file",
+      "mcp__project-navigator__list_directory",
+      "mcp__project-navigator__find_files",
+      "mcp__project-navigator__search_code",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "Bash(npm run build)",
+      "Bash(npm run build *)",
+      "Bash(npx vitest run)",
+      "Bash(npx vitest run *)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx tsc --noEmit *)"
+    ]
+  }
+}

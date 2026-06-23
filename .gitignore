@@ -11,3 +11,7 @@ yarn-error.log*
 .vscode/*
 /.idea/
 /.veai/
+/.claude/projects/
+/.claude/settings.local.json
+/.superpowers/
+/dist/
