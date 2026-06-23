@@ -6,7 +6,7 @@ Uses Corrective RAG (LangGraph) with a local Ollama LLM and hybrid BM25 + vector
 ## Prerequisites
 
 - **Docker** 20+ with Compose plugin (`docker compose version`)
-- **MCP client**: Claude Desktop **or** VSCode with GitHub Copilot
+- **MCP client**: one of — Claude Code CLI, VSCode + GitHub Copilot, Claude Desktop, or MCP Inspector
 
 No Node.js required to just run the server — everything runs inside Docker.
 
@@ -49,6 +49,37 @@ curl http://localhost:11434/api/tags         # {"models":[...]}
 
 ## Connect MCP Client
 
+### MCP Inspector (quickest way to verify without any IDE setup)
+
+```bash
+npx @modelcontextprotocol/inspector http://localhost:3000/sse
+```
+
+Opens a browser UI to call tools interactively. No config needed.
+
+### Claude Code (CLI)
+
+Add to `~/.claude/mcp.json` (or project-local `.claude/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "void-protocol-rag": {
+      "type": "sse",
+      "url": "http://localhost:3000/sse"
+    }
+  }
+}
+```
+
+Then use the tools directly in the Claude Code session.
+
+### VSCode + GitHub Copilot
+
+Add the contents of `mcp-config.json` to your VSCode `settings.json` under the key `"github.copilot.chat.mcp.servers"`.
+
+After saving, restart the Copilot Chat panel. The tools appear automatically in agent mode.
+
 ### Claude Desktop
 
 Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
@@ -64,21 +95,11 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 }
 ```
 
-Restart Claude Desktop. The four tools (`index_folder`, `ask_question`, `find_relevant_docs`, `index_status`) will appear in the tools panel.
-
-### VSCode + GitHub Copilot
-
-Add the contents of `mcp-config.json` to your VSCode `settings.json` under the key `"github.copilot.chat.mcp.servers"`.
+Restart Claude Desktop. The four tools will appear in the tools panel.
 
 ## Verification
 
-You can verify using your MCP client (Claude Desktop or Copilot Chat) or with **MCP Inspector**:
-
-```bash
-npx @modelcontextprotocol/inspector http://localhost:3000/sse
-```
-
-Run the steps below in order:
+Run the steps below in any connected MCP client:
 
 **Step 1 — Check status before indexing**
 
