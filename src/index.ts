@@ -38,16 +38,17 @@ async function main() {
 
   const graph = createRAGGraph(ollama, collection, bm25, embed, config)
 
-  const server = new McpServer({ name: "void-protocol-rag", version: "1.0.0" })
-  registerIndexFolderTool(server, indexer)
-  registerIndexStatusTool(server, indexer)
-  registerAskQuestionTool(server, graph)
-  registerFindRelevantDocsTool(server, collection, bm25, embed, config.retrievalTopK)
-
   const app = express()
   const transports: Record<string, SSEServerTransport> = {}
 
   app.get("/sse", async (req, res) => {
+    // McpServer must be created per connection — SDK forbids reusing one instance across transports
+    const server = new McpServer({ name: "void-protocol-rag", version: "1.0.0" })
+    registerIndexFolderTool(server, indexer)
+    registerIndexStatusTool(server, indexer)
+    registerAskQuestionTool(server, graph)
+    registerFindRelevantDocsTool(server, collection, bm25, embed, config.retrievalTopK)
+
     const transport = new SSEServerTransport("/messages", res)
     transports[transport.sessionId] = transport
     await server.connect(transport)
