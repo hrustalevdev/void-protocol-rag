@@ -20,7 +20,6 @@ export function registerIndexFolderTool(server: McpServer, indexer: Indexer): vo
           content: [{
             type: "text" as const,
             text: JSON.stringify({
-              success: true,
               filesIndexed: result.filesIndexed,
               chunksCreated: result.chunksCreated,
               durationMs: result.duration,

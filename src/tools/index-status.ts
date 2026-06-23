@@ -9,9 +9,16 @@ export function registerIndexStatusTool(server: McpServer, indexer: Indexer): vo
     "or to verify that indexing completed successfully.",
     {},
     async () => {
-      const status = await indexer.getStatus()
-      return {
-        content: [{ type: "text" as const, text: JSON.stringify(status) }],
+      try {
+        const status = await indexer.getStatus()
+        return {
+          content: [{ type: "text" as const, text: JSON.stringify(status) }],
+        }
+      } catch (err) {
+        return {
+          content: [{ type: "text" as const, text: JSON.stringify({ error: (err as Error).message }) }],
+          isError: true,
+        }
       }
     }
   )
