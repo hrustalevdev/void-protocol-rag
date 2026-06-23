@@ -1,0 +1,50 @@
+# Architecture
+
+## Overview
+
+MCP server built with TypeScript and Express. Exposes 4 tools over SSE transport.
+Implements Corrective RAG pattern using LangGraph for orchestration.
+
+## Components
+
+```
+┌─────────────────────────────────────────────┐
+│             MCP Client (IDE)                │
+└──────────────────┬──────────────────────────┘
+                   │ SSE (port 3000)
+┌──────────────────▼──────────────────────────┐
+│             MCP Server (Express)            │
+│  ┌─────────┐ ┌──────────┐ ┌─────────────┐  │
+│  │index_   │ │ask_      │ │find_        │  │
+│  │folder   │ │question  │ │relevant_docs│  │
+│  └────┬────┘ └────┬─────┘ └──────┬──────┘  │
+│       │           │               │         │
+│  ┌────▼───────────▼───────────────▼──────┐  │
+│  │              Indexer                  │  │
+│  └────────────────┬───────────────────── ┘  │
+│                   │                         │
+│  ┌────────────────▼────────────────────┐    │
+│  │         LangGraph RAG Graph         │    │
+│  │  rewrite→retrieve→grade→generate    │    │
+│  └──────────────────────────────────── ┘    │
+└───────────────┬─────────────────────────────┘
+                │
+    ┌───────────┴────────────┐
+    ▼                        ▼
+ChromaDB (vector)      Ollama (LLM + embed)
+BM25 (in-memory)
+```
+
+## Corrective RAG Flow
+
+```
+RU Query → rewriteQuery (RU→EN) → retrieve (BM25+vector→RRF)
+  → gradeChunks (LLM: relevant? yes/no)
+    ├─ ≥2 relevant OR retries≥2 → generate (answer in RU) → return
+    └─ <2 relevant AND retries<2 → broadenQuery → retrieve (loop)
+```
+
+## Hybrid Search
+
+BM25 (keyword) + ChromaDB vector search → Reciprocal Rank Fusion (k=60).
+BM25 index is held in memory and rebuilt from ChromaDB on server startup.
