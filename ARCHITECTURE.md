@@ -55,5 +55,19 @@ flowchart TD
 
 ## Hybrid Search
 
-BM25 (keyword) + ChromaDB vector search → Reciprocal Rank Fusion (k=60).
+```mermaid
+flowchart LR
+    Query["Search Query"]
+    BM25["BM25<br/>(keyword match)"]
+    Vector["ChromaDB<br/>(vector search)"]
+    RRF["Reciprocal Rank Fusion<br/>k=60"]
+    Result["Top-K Chunks"]
+
+    Query --> BM25
+    Query --> Vector
+    BM25 -->|"ranked list"| RRF
+    Vector -->|"ranked list"| RRF
+    RRF --> Result
+```
+
 BM25 index is held in memory and rebuilt from ChromaDB on server startup.
