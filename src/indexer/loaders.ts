@@ -1,7 +1,7 @@
 import fs from "fs/promises"
 import path from "path"
 import { glob } from "glob"
-import yaml from "js-yaml"
+import { dump as yamlDump, load as yamlLoad } from "js-yaml"
 
 export interface DocumentContent {
   content: string
@@ -20,7 +20,7 @@ export async function loadFile(filePath: string): Promise<DocumentContent> {
   if (ext === ".json") {
     content = JSON.stringify(JSON.parse(raw), null, 2)
   } else if (ext === ".yaml" || ext === ".yml") {
-    content = yaml.dump(yaml.load(raw))
+    content = yamlDump(yamlLoad(raw))
   }
 
   return { content, filePath }
