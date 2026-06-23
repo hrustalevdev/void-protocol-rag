@@ -20,7 +20,7 @@ export function registerFindRelevantDocsTool(
     "Returns chunks ranked by hybrid BM25 + vector similarity score.",
     {
       query: z.string().describe("Search query in any language"),
-      topK: z.number().int().positive().optional().describe("Number of chunks to return (default 5)"),
+      topK: z.number().int().positive().optional().describe("Number of chunks to return (default 6)"),
     },
     async ({ query, topK }) => {
       try {

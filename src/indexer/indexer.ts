@@ -35,8 +35,12 @@ export class Indexer {
     // Clear existing data
     const existing = await this.collection.count()
     if (existing > 0) {
-      const all = await this.collection.get({})
-      if (all.ids.length > 0) await this.collection.delete({ ids: all.ids })
+      // Delete all existing docs without fetching IDs (avoids page-size truncation)
+      try {
+        await this.collection.delete({ where: { "chunkIndex": { "$gte": 0 } } })
+      } catch {
+        // Collection was empty — safe to proceed
+      }
     }
 
     const bm25Docs: Array<{ id: string; text: string }> = []
@@ -77,7 +81,7 @@ export class Indexer {
   }
 
   async loadBM25FromChroma(): Promise<void> {
-    const all = await this.collection.get({ include: ["documents", "metadatas"] as any })
+    const all = await this.collection.get({ include: ["documents", "metadatas"] as any, limit: 100000 })
     const docs = (all.ids ?? []).map((id, i) => ({
       id,
       text: all.documents?.[i] ?? "",

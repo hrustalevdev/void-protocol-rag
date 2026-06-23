@@ -4,7 +4,11 @@ import type { RAGState } from "../state.js"
 
 export function createGenerateNode(ollama: Ollama, config: Config) {
   return async (state: RAGState): Promise<Partial<RAGState>> => {
-    const chunksToUse = state.relevantChunks.length > 0 ? state.relevantChunks : state.chunks
+    const chunksToUse = (state.bestRelevantChunks?.length ?? 0) > 0
+      ? state.bestRelevantChunks
+      : state.relevantChunks.length > 0
+      ? state.relevantChunks
+      : state.chunks
     const context = chunksToUse.map(c => c.content).join("\n\n---\n\n")
     const sources = [...new Set(chunksToUse.map(c => c.source))]
 

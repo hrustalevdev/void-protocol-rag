@@ -47,6 +47,6 @@ export async function runRAGQuery(
 ): Promise<{ answer: string; sources: string[]; confidence: "high" | "low" }> {
   const result = await graph.invoke({ originalQuery: question })
   const confidence: "high" | "low" =
-    result.relevantChunks.length >= 2 ? "high" : "low"
+    result.bestRelevantChunks.length >= 2 || result.relevantChunks.length >= 2 ? "high" : "low"
   return { answer: result.answer, sources: result.sources, confidence }
 }

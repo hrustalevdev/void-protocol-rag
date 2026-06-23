@@ -8,6 +8,7 @@ export const RAGStateAnnotation = Annotation.Root({
   rewrittenQuery: Annotation<string>({ reducer: (_, b) => b, default: () => "" }),
   chunks: Annotation<RetrievedChunk[]>({ reducer: (_, b) => b, default: () => [] }),
   relevantChunks: Annotation<RetrievedChunk[]>({ reducer: (_, b) => b, default: () => [] }),
+  bestRelevantChunks: Annotation<RetrievedChunk[]>({ reducer: (a, b) => b.length > 0 ? b : a, default: () => [] }),
   answer: Annotation<string>({ reducer: (_, b) => b, default: () => "" }),
   sources: Annotation<string[]>({ reducer: (_, b) => b, default: () => [] }),
   retryCount: Annotation<number>({ reducer: (_, b) => b, default: () => 0 }),

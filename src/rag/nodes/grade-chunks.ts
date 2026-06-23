@@ -20,6 +20,6 @@ Document chunk (English): ${chunk.content}`
       }
     }
 
-    return { relevantChunks }
+    return { relevantChunks, bestRelevantChunks: relevantChunks }
   }
 }

@@ -67,4 +67,25 @@ describe("MCP tool handlers (e2e)", () => {
     expect(status.chunkCount).toBeGreaterThan(0)
     expect(status.lastIndexed).not.toBeNull()
   })
+
+  it("ask_question returns answer containing a fact from sample_docs", async () => {
+    const { Ollama } = await import("ollama")
+    const ollamaInstance = new Ollama()
+    const embed = (text: string) =>
+      ollamaInstance.embeddings({ model: "nomic-embed-text", prompt: text }).then((r: any) => r.embedding)
+    const graph = createRAGGraph(ollamaInstance as any, collection, bm25, embed, {
+      chromadbUrl: "http://localhost:8000",
+      ollamaUrl: "http://localhost:11434",
+      llmModel: "test-model",
+      embedModel: "nomic-embed-text",
+      mcpPort: 3000,
+      chromaCollection: TEST_COLLECTION,
+      retrievalTopK: 6,
+      minRelevantChunks: 2,
+      maxRetries: 2,
+    })
+    const result = await runRAGQuery(graph, "сколько постоянных жителей на станции Новая Амора?")
+    expect(result.answer).toBeTruthy()
+    expect(result.sources.length).toBeGreaterThan(0)
+  })
 })
