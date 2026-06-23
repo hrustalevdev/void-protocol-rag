@@ -55,7 +55,7 @@ async function main() {
     req.on("close", () => { delete transports[transport.sessionId] })
   })
 
-  app.post("/messages", express.json(), async (req, res) => {
+  app.post("/messages", async (req, res) => {
     const sessionId = req.query.sessionId as string
     const transport = transports[sessionId]
     if (transport) {
